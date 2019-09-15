@@ -12,12 +12,12 @@
           <a-form-item label='所拥有的权限'>
             <a-tree
               checkable
-              :multiple="true"
-              :showLine="true"
               :defaultExpandAll="true"
-              v-model="checkedKeys"
-              :selectedKeys="selectedKeys"
+              :checkedKeys="checkedKeys"
               :treeData="treeData"
+              @check="onCheck"
+              :selectedKeys="selectedKeys"
+              :checkStrictly="checkStrictly"
             />
           </a-form-item>
         </a-form>
@@ -69,17 +69,16 @@
         visible: false,
         treeData: [],
         autoExpandParent: true,
-        type: 1
+        type: 1,
+        checkStrictly: true
       }
     },
     watch: {
-      checkedKeys(val) {
-        console.log(val)
-        this.checkedKeys = val
-      }
+
     },
 
     methods: {
+
       onClose() {
         this.$emit('close')
         this.visible = false
@@ -109,9 +108,14 @@
         })
 
       },
-      onCheck(checkedKeys) {
-        console.log('onCheck', checkedKeys)
-        this.checkedKeys = checkedKeys
+      onCheck(o) {
+        if (this.checkStrictly) {
+          this.checkedKeys = o.checked
+        } else {
+          this.checkedKeys = o
+        }
+        console.log('---')
+        console.log(this.checkedKeys)
       },
       onSelect(selectedKeys, info) {
         console.log('onSelect', info)
